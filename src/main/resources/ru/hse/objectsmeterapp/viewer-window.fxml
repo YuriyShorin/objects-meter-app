@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.hse.objectsmeterapp.controller.FilesViewerController">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="1920.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Файл">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#openFiles" text="Открыть" />
+                  <MenuItem mnemonicParsing="false" onAction="#chooseInstrument" text="Выбрать инструмент" />
+                  <MenuItem mnemonicParsing="false" onAction="#closeFiles" text="Закрыть" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TextField disable="true" layoutX="49.0" layoutY="61.0" promptText="мин. X" fx:id="xMinTextField" />
+      <TextField disable="true" layoutX="49.0" layoutY="96.0" promptText="макс. Х" fx:id="xMaxTextField" />
+      <TextField fx:id="yMinTextField" disable="true" layoutX="214.0" layoutY="61.0" promptText="мин. Y" />
+      <TextField fx:id="yMaxTextField" disable="true" layoutX="214.0" layoutY="96.0" promptText="макс. Y" />
+      <Button layoutX="214.0" layoutY="129.0" mnemonicParsing="false" onAction="#applyButtonPressed" text="Применить" />
+      <CheckBox layoutX="49.0" layoutY="34.0" mnemonicParsing="false" onAction="#xAutoCheckBoxPressed" selected="true" text="Авто X" fx:id="xAutoCheckBox" />
+      <CheckBox fx:id="yAutoCheckBox" layoutX="220.0" layoutY="34.0" mnemonicParsing="false" onAction="#yAutoCheckBoxPressed" selected="true" text="Авто Y" />
+      <ComboBox fx:id="frequencyComboBox" layoutX="396.0" layoutY="61.0" onAction="#frequencyChose" prefWidth="150.0" />
+      <TabPane layoutY="167.0" prefHeight="832.0" prefWidth="1920.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="60.0" tabMinWidth="40.0">
+        <tabs>
+          <Tab text="S11">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1634.0">
+                     <children>
+                        <LineChart fx:id="s11RealChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                          <xAxis>
+                            <NumberAxis label="GHz" prefHeight="36.0" prefWidth="449.0" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="s11ImaginaryChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                           <xAxis>
+                              <NumberAxis label="GHz" prefHeight="36.0" prefWidth="449.0" side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                           </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="s11ModuleChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                           <xAxis>
+                              <NumberAxis label="GHz" prefHeight="36.0" prefWidth="449.0" side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                           </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="s11PhaseChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                           <xAxis>
+                              <NumberAxis label="GHz" prefHeight="36.0" prefWidth="449.0" side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                           </yAxis>
+                        </LineChart>
+                        <Text layoutX="422.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Действительная" wrappingWidth="178.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="1407.0" layoutY="403.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Мнимая" wrappingWidth="91.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="1424.0" layoutY="797.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Фаза" wrappingWidth="57.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="468.0" layoutY="798.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Модуль" wrappingWidth="87.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="S21">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1634.0">
+                        <children>
+                            <LineChart fx:id="s21RealChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s21ImaginaryChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s21ModuleChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s21PhaseChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <Text layoutX="422.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Действительная" wrappingWidth="178.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1407.0" layoutY="403.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Мнимая" wrappingWidth="91.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1424.0" layoutY="788.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Фаза" wrappingWidth="57.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="468.0" layoutY="787.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Модуль" wrappingWidth="87.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                        </children>
+                    </AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="S12">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1634.0">
+                        <children>
+                            <LineChart fx:id="s12RealChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="300.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s12ImaginaryChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s12ModuleChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s12PhaseChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <Text layoutX="422.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Действительная" wrappingWidth="178.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1407.0" layoutY="403.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Мнимая" wrappingWidth="91.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1424.0" layoutY="788.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Фаза" wrappingWidth="57.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="468.0" layoutY="787.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Модуль" wrappingWidth="87.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                        </children>
+                    </AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="S22">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="1634.0">
+                        <children>
+                            <LineChart fx:id="s22RealChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s22ImaginaryChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="20.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="300.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s22ModuleChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="20.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <LineChart fx:id="s22PhaseChart" alternativeColumnFillVisible="true" createSymbols="false" layoutX="970.0" layoutY="412.0" prefHeight="366.0" prefWidth="930.0">
+                                <xAxis>
+                                    <NumberAxis label="GHz" prefHeight="40.0" prefWidth="449.0" side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis prefHeight="354.0" prefWidth="60.0" side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                            <Text layoutX="422.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Действительная" wrappingWidth="178.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1407.0" layoutY="403.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Мнимая" wrappingWidth="91.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="1424.0" layoutY="788.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Фаза" wrappingWidth="57.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                            <Text layoutX="468.0" layoutY="787.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Модуль" wrappingWidth="87.0">
+                                <font>
+                                    <Font size="24.0" />
+                                </font>
+                            </Text>
+                        </children>
+                    </AnchorPane>
+                </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
