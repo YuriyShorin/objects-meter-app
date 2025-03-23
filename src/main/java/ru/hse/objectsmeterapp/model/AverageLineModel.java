@@ -1,11 +1,11 @@
 package ru.hse.objectsmeterapp.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.numbers.complex.Complex;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class AverageLineModel {
 
     private Double frequency;

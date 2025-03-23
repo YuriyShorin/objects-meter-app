@@ -1,7 +1,6 @@
 package ru.hse.objectsmeterapp.model;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 

@@ -1,37 +1,32 @@
 package ru.hse.objectsmeterapp.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.chart.BubbleChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import ru.hse.objectsmeterapp.ObjectsMeterFxApplication;
 import ru.hse.objectsmeterapp.enums.FrequencyAbbreviations;
-import ru.hse.objectsmeterapp.enums.WindowsInfo;
 import ru.hse.objectsmeterapp.exception.BusinessException;
+import ru.hse.objectsmeterapp.model.CalculatedModel;
 import ru.hse.objectsmeterapp.model.S2PFileModel;
 import ru.hse.objectsmeterapp.service.AlertService;
+import ru.hse.objectsmeterapp.service.CalculationService;
 import ru.hse.objectsmeterapp.service.ChartService;
 import ru.hse.objectsmeterapp.service.FileService;
 
 import java.io.File;
-import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class LTMethodController {
 
     private final FileService fileService;
+
+    private final CalculationService calculationService;
 
     private final AlertService alertService;
 
@@ -39,9 +34,9 @@ public class LTMethodController {
 
     private final Map<String, S2PFileModel> s2PFileModelsByFileNames;
 
-    private List<LineChart<Number, Number>> charts;
+    private final List<LineChart<Number, Number>> charts;
 
-    private List<ScatterChart<Number, Number>> frequencyCharts;
+    private List<CalculatedModel> calculatedModels;
 
     @FXML
     private CheckBox xAutoCheckBox;
@@ -83,6 +78,30 @@ public class LTMethodController {
     private LineChart<Number, Number> sb11ImaginaryChart;
 
     @FXML
+    private LineChart<Number, Number> sa12RealChart;
+
+    @FXML
+    private LineChart<Number, Number> sa12ImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> sb12RealChart;
+
+    @FXML
+    private LineChart<Number, Number> sb12ImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> sa21RealChart;
+
+    @FXML
+    private LineChart<Number, Number> sa21ImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> sb21RealChart;
+
+    @FXML
+    private LineChart<Number, Number> sb21ImaginaryChart;
+
+    @FXML
     private LineChart<Number, Number> sa22RealChart;
 
     @FXML
@@ -94,28 +113,14 @@ public class LTMethodController {
     @FXML
     private LineChart<Number, Number> sb22ImaginaryChart;
 
-    @FXML
-    private ScatterChart<Number, Number> frequencyChartSa11Real;
-
-    @FXML
-    private ScatterChart<Number, Number> frequencyChartSa11Imaginary;
-
-    @FXML
-    private ScatterChart<Number, Number> frequencyChartSb11Real;
-
-    @FXML
-    private ScatterChart<Number, Number> frequencyChartSb11Imaginary;
-
-    @Setter
-    private Stage stage;
-
     public LTMethodController() {
         this.fileService = new FileService();
         this.alertService = new AlertService();
         this.chartService = new ChartService();
+        this.calculationService = new CalculationService();
         this.s2PFileModelsByFileNames = new HashMap<>();
         this.charts = new ArrayList<>();
-        this.frequencyCharts = new ArrayList<>();
+        this.calculatedModels = new ArrayList<>();
     }
 
     public void initialize() {
@@ -127,8 +132,9 @@ public class LTMethodController {
             frequencyComboBox.setValue(FrequencyAbbreviations.GHZ.getAbbreviation());
         }
         charts.addAll(List.of(sa11RealChart, sa11ImaginaryChart, sb11RealChart, sb11ImaginaryChart,
+                sa12RealChart, sa12ImaginaryChart, sb12RealChart, sb12ImaginaryChart,
+                sa21RealChart, sa21ImaginaryChart, sb21RealChart, sb21ImaginaryChart,
                 sa22RealChart, sa22ImaginaryChart, sb22RealChart, sb22ImaginaryChart));
-        frequencyCharts.addAll(List.of(frequencyChartSa11Real, frequencyChartSa11Imaginary, frequencyChartSb11Real, frequencyChartSb11Imaginary));
     }
 
     public void openFiles() {
@@ -143,24 +149,74 @@ public class LTMethodController {
 
         List<String> fileNames = new ArrayList<>();
         s2PFileModelsByFileNames.clear();
+
+        LocalTime start = LocalTime.now();
         files.forEach(file -> {
             S2PFileModel s2PFileModel = fileService.readS2PFile(file);
             s2PFileModelsByFileNames.put(file.getName(), s2PFileModel);
             fileNames.add(file.getName());
         });
+        System.out.println("Чтение файлов заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
 
         lFileComboBox.getItems().addAll(fileNames);
         lFileComboBox.setValue(files.getFirst().getName());
 
         tFileComboBox.getItems().addAll(fileNames);
         tFileComboBox.setValue(files.get(1).getName());
+    }
 
-        //  createCharts();
+    public void save() {
+        fileService.save(calculatedModels);
     }
 
     public void closeFiles() {
         s2PFileModelsByFileNames.clear();
+        calculatedModels.clear();
         chartService.clearCharts(charts);
+        lFileComboBox.getItems().clear();
+        tFileComboBox.getItems().clear();
+    }
+
+    public void applyButtonPressed() {
+        if (xAutoCheckBox.isSelected()) {
+            xMinTextField.clear();
+            xMaxTextField.clear();
+            chartService.setXAxisAutoRanging(charts, calculatedModels);
+        } else {
+            try {
+                Double lowerBound = Double.parseDouble(xMinTextField.getText());
+                Double upperBound = Double.parseDouble(xMaxTextField.getText());
+                chartService.setXAxisRanging(charts, lowerBound, upperBound);
+            } catch (NumberFormatException e) {
+                alertService.showErrorAlert("Неверный формат числа");
+            } catch (BusinessException e) {
+                alertService.showErrorAlert(e.getMessage());
+            }
+        }
+
+        if (yAutoCheckBox.isSelected()) {
+            yMinTextField.clear();
+            yMaxTextField.clear();
+            chartService.setYAxisAutoRanging(charts);
+        } else {
+            try {
+                Double lowerBound = Double.parseDouble(yMinTextField.getText());
+                Double upperBound = Double.parseDouble(yMaxTextField.getText());
+                chartService.setYAxisRanging(charts, lowerBound, upperBound);
+            } catch (NumberFormatException e) {
+                alertService.showErrorAlert("Неверный формат числа");
+            } catch (BusinessException e) {
+                alertService.showErrorAlert(e.getMessage());
+            }
+        }
+    }
+
+    public void calculateButtonPressed() {
+        createCharts();
+    }
+
+    public void frequencyChose() {
+        createCharts();
     }
 
     public void xAutoCheckBoxPressed() {
@@ -185,61 +241,17 @@ public class LTMethodController {
         yMaxTextField.setDisable(false);
     }
 
-    public void applyButtonPressed() {
-        chartService.clearCharts(charts);
-
-        if (xAutoCheckBox.isSelected()) {
-            chartService.setXAxisAutoRanging(charts);
-        } else {
-            try {
-                Double lowerBound = Double.parseDouble(xMinTextField.getText());
-                Double upperBound = Double.parseDouble(xMaxTextField.getText());
-                chartService.setXAxisRanging(charts, lowerBound, upperBound);
-            } catch (NumberFormatException e) {
-                alertService.showErrorAlert("Неверный формат числа");
-            } catch (BusinessException e) {
-                alertService.showErrorAlert(e.getMessage());
-            }
-
-        }
-
-        if (yAutoCheckBox.isSelected()) {
-            chartService.setYAxisAutoRanging(charts);
-        } else {
-            try {
-                Double lowerBound = Double.parseDouble(yMinTextField.getText());
-                Double upperBound = Double.parseDouble(yMaxTextField.getText());
-                chartService.setYAxisRanging(charts, lowerBound, upperBound);
-            } catch (NumberFormatException e) {
-                alertService.showErrorAlert("Неверный формат числа");
-            } catch (BusinessException e) {
-                alertService.showErrorAlert(e.getMessage());
-            }
-        }
-
-        createCharts();
-    }
-
-    public void frequencyChose() {
-        createCharts();
-    }
-
-    public void chooseInstrument() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ObjectsMeterFxApplication.class.getResource(WindowsInfo.MAIN.getName()));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle(WindowsInfo.MAIN.getTitle());
-        stage.setScene(scene);
-        stage.setMaximized(true);
-        stage.show();
-
-        MainWindowController mainWindowController = fxmlLoader.getController();
-        mainWindowController.setStage(stage);
-
-    }
-
     private void createCharts() {
+        LocalTime start = LocalTime.now();
+        calculatedModels = calculationService.calculate(s2PFileModelsByFileNames.get(lFileComboBox.getValue()),
+                s2PFileModelsByFileNames.get(tFileComboBox.getValue()),
+                frequencyComboBox.getValue());
+        System.out.println("Вычисление заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
+
         chartService.clearCharts(charts);
-        chartService.createLTCharts(charts, frequencyCharts, s2PFileModelsByFileNames.get(lFileComboBox.getValue()),
-                s2PFileModelsByFileNames.get(tFileComboBox.getValue()), frequencyComboBox.getValue());
+
+        start = LocalTime.now();
+        chartService.createCharts(charts, calculatedModels);
+        System.out.println("Построение графиков заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
     }
 }

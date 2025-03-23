@@ -11,4 +11,11 @@ public class ComplexNumbersUtils {
         double imaginary = magnitude * Math.sin(phaseInRadians);
         return Complex.ofCartesian(real, imaginary);
     }
+
+    public static Complex calculateDeterminant(Complex a, Complex b, Complex c, Complex d) {
+        return a
+                .multiply(d)
+                .subtract(b.
+                        multiply(c));
+    }
 }
