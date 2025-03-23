@@ -3,18 +3,25 @@ package ru.hse.objectsmeterapp.service;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
 import org.apache.commons.numbers.complex.Complex;
+import ru.hse.objectsmeterapp.exception.BusinessException;
+import ru.hse.objectsmeterapp.model.CalculatedModel;
 import ru.hse.objectsmeterapp.model.MeasurementModel;
 import ru.hse.objectsmeterapp.model.S2PFileModel;
 import ru.hse.objectsmeterapp.utils.ComplexNumbersUtils;
 import ru.hse.objectsmeterapp.utils.StringUtils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FileService {
 
@@ -24,6 +31,18 @@ public class FileService {
 
     private static final String COMMENT_PREFIX = "!";
     private static final String HEADER_PREFIX = "#";
+
+    private static final String OUTPUT_DIRECTORY = "C:\\Programms\\Files\\Java\\objects-meter-app\\output\\";
+    private static final String FILE_EXTENSION = ".s2p";
+    private static final String COMMENTS = """
+            !Date: %s
+            !Correction: S11(Full 2 Port(1,2))
+            !S21(Full 2 Port(1,2))
+            !S12(Full 2 Port(1,2))
+            !S22(Full 2 Port(1,2))
+            !S2P File: Measurements: S11, S21, S12, S22:
+            """;
+    private static final String HEADER = "# Hz S RI R 50";
 
     public List<File> chooseFiles() {
         FileChooser fileChooser = new FileChooser();
@@ -69,7 +88,7 @@ public class FileService {
                         measurements.add(measurementModel);
                     });
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException("Ошибка при чтении из файла");
         }
 
         s2PFileModel.setComments(comments);
@@ -79,11 +98,45 @@ public class FileService {
         return s2PFileModel;
     }
 
+    public void save(List<CalculatedModel> calculatedModels) {
+        if (calculatedModels.isEmpty()) {
+            return;
+        }
+
+        String filePath = OUTPUT_DIRECTORY + UUID.randomUUID() + FILE_EXTENSION;
+        LocalDateTime now = LocalDateTime.now();
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+
+            writer.write(String.format(COMMENTS, now));
+            writer.newLine();
+
+            writer.write(HEADER);
+            writer.newLine();
+
+            for (CalculatedModel calculatedModel : calculatedModels) {
+                String line = calculatedModel.getFrequency()
+                        + " " + calculatedModel.getS11x().getReal() + " " + calculatedModel.getS11x().getImaginary()
+                        + " " + calculatedModel.getS21x().getReal() + " " + calculatedModel.getS21x().getImaginary()
+                        + " " + calculatedModel.getS12x().getReal() + " " + calculatedModel.getS12x().getImaginary()
+                        + " " + calculatedModel.getS22x().getReal() + " " + calculatedModel.getS22x().getImaginary();
+                writer.write(line);
+                writer.newLine();
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            throw new BusinessException("Ошибка при сохранении файла");
+        }
+    }
+
     private MeasurementModel readMeasurement(String line, String frequencyAbbreviation, String measurementAbbreviation) {
         List<String> lineSplit = StringUtils.split(line);
+        List<Complex> sValues = new ArrayList<>();
+
         MeasurementModel measurementModel = new MeasurementModel();
         double frequency = Double.parseDouble(lineSplit.getFirst());
-        List<Complex> sValues = new ArrayList<>();
 
         for (int i = 1; i < lineSplit.size(); i = i + 2) {
             Complex sValue;
