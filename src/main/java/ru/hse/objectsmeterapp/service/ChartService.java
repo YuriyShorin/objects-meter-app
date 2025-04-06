@@ -17,44 +17,11 @@ public class ChartService {
 
     public void createCharts(List<LineChart<Number, Number>> charts, List<CalculatedModel> calculatedModels) {
         List<XYChart.Series<Number, Number>> series = createSeries();
+        List<List<XYChart.Data<Number, Number>>> dataList = createDataList(calculatedModels);
 
-        calculatedModels.forEach(calculatedModel -> {
-            Double frequency = calculatedModel.getFrequency();
-
-            // s11 charts
-            series.getFirst().getData().add(new XYChart.Data<>(frequency, calculatedModel.getS11L().getReal()));
-            series.get(1).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa11().getReal()));
-
-            series.get(2).getData().add(new XYChart.Data<>(frequency, calculatedModel.getS11L().getImaginary()));
-            series.get(3).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa11().getImaginary()));
-
-            series.get(4).getData().add(new XYChart.Data<>(frequency, calculatedModel.getS22L().getReal()));
-            series.get(5).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb11().getReal()));
-
-            series.get(6).getData().add(new XYChart.Data<>(frequency, calculatedModel.getS22L().getImaginary()));
-            series.get(7).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb11().getImaginary()));
-
-            // s12 charts
-            series.get(8).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa12().getReal()));
-            series.get(9).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa12().getImaginary()));
-
-            series.get(10).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb12().getReal()));
-            series.get(11).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb12().getImaginary()));
-
-            // s21 charts
-            series.get(12).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa21().getReal()));
-            series.get(13).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa21().getImaginary()));
-
-            series.get(14).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb21().getReal()));
-            series.get(15).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb21().getImaginary()));
-
-            // s22 charts
-            series.get(16).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa22().getReal()));
-            series.get(17).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSa22().getImaginary()));
-
-            series.get(18).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb22().getReal()));
-            series.get(19).getData().add(new XYChart.Data<>(frequency, calculatedModel.getSb22().getImaginary()));
-        });
+        for (int i = 0; i < NUMBER_OF_SERIES; i++) {
+            series.get(i).getData().addAll(dataList.get(i));
+        }
 
         setXAxisAutoRanging(charts, calculatedModels);
 
@@ -157,5 +124,52 @@ public class ChartService {
             series.add(new XYChart.Series<>());
         }
         return series;
+    }
+
+    private List<List<XYChart.Data<Number, Number>>> createDataList(List<CalculatedModel> calculatedModels) {
+        List<List<XYChart.Data<Number, Number>>> dataList = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_SERIES; i++) {
+            dataList.add(new ArrayList<>());
+        }
+
+        calculatedModels.forEach(calculatedModel -> {
+            Double frequency = calculatedModel.getFrequency();
+
+            // s11 charts
+            dataList.getFirst().add(new XYChart.Data<>(frequency, calculatedModel.getS11L().getReal()));
+            dataList.get(1).add(new XYChart.Data<>(frequency, calculatedModel.getSa11().getReal()));
+
+            dataList.get(2).add(new XYChart.Data<>(frequency, calculatedModel.getS11L().getImaginary()));
+            dataList.get(3).add(new XYChart.Data<>(frequency, calculatedModel.getSa11().getImaginary()));
+
+            dataList.get(4).add(new XYChart.Data<>(frequency, calculatedModel.getS22L().getReal()));
+            dataList.get(5).add(new XYChart.Data<>(frequency, calculatedModel.getSb11().getReal()));
+
+            dataList.get(6).add(new XYChart.Data<>(frequency, calculatedModel.getS22L().getImaginary()));
+            dataList.get(7).add(new XYChart.Data<>(frequency, calculatedModel.getSb11().getImaginary()));
+
+            // s12 charts
+            dataList.get(8).add(new XYChart.Data<>(frequency, calculatedModel.getSa12().getReal()));
+            dataList.get(9).add(new XYChart.Data<>(frequency, calculatedModel.getSa12().getImaginary()));
+
+            dataList.get(10).add(new XYChart.Data<>(frequency, calculatedModel.getSb12().getReal()));
+            dataList.get(11).add(new XYChart.Data<>(frequency, calculatedModel.getSb12().getImaginary()));
+
+            // s21 charts
+            dataList.get(12).add(new XYChart.Data<>(frequency, calculatedModel.getSa21().getReal()));
+            dataList.get(13).add(new XYChart.Data<>(frequency, calculatedModel.getSa21().getImaginary()));
+
+            dataList.get(14).add(new XYChart.Data<>(frequency, calculatedModel.getSb21().getReal()));
+            dataList.get(15).add(new XYChart.Data<>(frequency, calculatedModel.getSb21().getImaginary()));
+
+            // s22 charts
+            dataList.get(16).add(new XYChart.Data<>(frequency, calculatedModel.getSa22().getReal()));
+            dataList.get(17).add(new XYChart.Data<>(frequency, calculatedModel.getSa22().getImaginary()));
+
+            dataList.get(18).add(new XYChart.Data<>(frequency, calculatedModel.getSb22().getReal()));
+            dataList.get(19).add(new XYChart.Data<>(frequency, calculatedModel.getSb22().getImaginary()));
+        });
+
+        return dataList;
     }
 }
