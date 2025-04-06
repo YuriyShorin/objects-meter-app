@@ -15,8 +15,6 @@ import ru.hse.objectsmeterapp.service.ChartService;
 import ru.hse.objectsmeterapp.service.FileService;
 
 import java.io.File;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,13 +148,11 @@ public class LTMethodController {
         List<String> fileNames = new ArrayList<>();
         s2PFileModelsByFileNames.clear();
 
-        LocalTime start = LocalTime.now();
         files.forEach(file -> {
             S2PFileModel s2PFileModel = fileService.readS2PFile(file);
             s2PFileModelsByFileNames.put(file.getName(), s2PFileModel);
             fileNames.add(file.getName());
         });
-        System.out.println("Чтение файлов заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
 
         lFileComboBox.getItems().addAll(fileNames);
         lFileComboBox.setValue(files.getFirst().getName());
@@ -242,16 +238,10 @@ public class LTMethodController {
     }
 
     private void createCharts() {
-        LocalTime start = LocalTime.now();
         calculatedModels = calculationService.calculate(s2PFileModelsByFileNames.get(lFileComboBox.getValue()),
                 s2PFileModelsByFileNames.get(tFileComboBox.getValue()),
                 frequencyComboBox.getValue());
-        System.out.println("Вычисление заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
-
         chartService.clearCharts(charts);
-
-        start = LocalTime.now();
         chartService.createCharts(charts, calculatedModels);
-        System.out.println("Построение графиков заняло: " + Duration.between(start, LocalTime.now()).toSeconds() + " секунд.");
     }
 }
