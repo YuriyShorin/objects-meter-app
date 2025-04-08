@@ -7,7 +7,7 @@ import ru.hse.objectsmeterapp.exception.BusinessException;
 import ru.hse.objectsmeterapp.model.CalculatedModel;
 import ru.hse.objectsmeterapp.model.MeasurementModel;
 import ru.hse.objectsmeterapp.model.S2PFileModel;
-import ru.hse.objectsmeterapp.utils.ComplexNumbersUtils;
+import ru.hse.objectsmeterapp.utils.NumbersUtils;
 import ru.hse.objectsmeterapp.utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -36,11 +36,7 @@ public class FileService {
     private static final String FILE_EXTENSION = ".s2p";
     private static final String COMMENTS = """
             !Date: %s
-            !Correction: S11(Full 2 Port(1,2))
-            !S21(Full 2 Port(1,2))
-            !S12(Full 2 Port(1,2))
-            !S22(Full 2 Port(1,2))
-            !S2P File: Measurements: S11, S21, S12, S22:
+            !Measurements: S11, S21, S12, S22
             """;
     private static final String HEADER = "# Hz S RI R 50";
 
@@ -135,7 +131,6 @@ public class FileService {
         List<String> lineSplit = StringUtils.split(line);
         List<Complex> sValues = new ArrayList<>();
 
-        MeasurementModel measurementModel = new MeasurementModel();
         double frequency = Double.parseDouble(lineSplit.getFirst());
 
         for (int i = 1; i < lineSplit.size(); i = i + 2) {
@@ -145,7 +140,7 @@ public class FileService {
 
             switch (measurementAbbreviation) {
                 case "MA" -> sValue = Complex.ofPolar(value1, value2);
-                case "DB" -> sValue = ComplexNumbersUtils.fromPolarCoordinates(value1, value2);
+                case "DB" -> sValue = NumbersUtils.fromPolarCoordinates(value1, value2);
                 default -> sValue = Complex.ofCartesian(value1, value2);
             }
 
@@ -158,12 +153,12 @@ public class FileService {
             case "GHZ" -> frequency = frequency * 1000000000;
         }
 
-        measurementModel.setFrequency(frequency);
-        measurementModel.setS11(sValues.getFirst());
-        measurementModel.setS21(sValues.get(1));
-        measurementModel.setS12(sValues.get(2));
-        measurementModel.setS22(sValues.get(3));
-
-        return measurementModel;
+        return MeasurementModel.builder()
+                .frequency(frequency)
+                .s11(sValues.getFirst())
+                .s21(sValues.get(1))
+                .s12(sValues.get(2))
+                .s22(sValues.get(3))
+                .build();
     }
 }

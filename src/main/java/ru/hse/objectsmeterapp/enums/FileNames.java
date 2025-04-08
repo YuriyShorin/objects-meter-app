@@ -5,12 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FrequencyAbbreviations {
+public enum FileNames {
 
-    HZ("Hz"),
-    KHZ("kHz"),
-    MHZ("MHz"),
-    GHZ("GHz");
+    LT_METHOD("lt-method-window.fxml"),
+    STYLES("style/style.css");
 
-    private final String abbreviation;
+    private final String name;
 }

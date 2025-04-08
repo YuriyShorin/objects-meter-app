@@ -6,7 +6,7 @@ import org.apache.commons.numbers.complex.Complex;
 import ru.hse.objectsmeterapp.model.AverageLineModel;
 import ru.hse.objectsmeterapp.model.CalculatedModel;
 import ru.hse.objectsmeterapp.model.S2PFileModel;
-import ru.hse.objectsmeterapp.utils.ComplexNumbersUtils;
+import ru.hse.objectsmeterapp.utils.NumbersUtils;
 import ru.hse.objectsmeterapp.utils.ListUtils;
 
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import java.util.List;
 public class CalculationService {
 
     private final static double PI = Math.PI;
-
     private final static double EPSILON = 0.01;
 
     public List<CalculatedModel> calculate(S2PFileModel lFileModel, S2PFileModel tFileModel, String frequencyAbbreviation) {
@@ -84,9 +83,9 @@ public class CalculationService {
                         .multiply(s12T)
                         .sqrt();
 
-                Complex detS = ComplexNumbersUtils.calculateDeterminant(s11L, s12L, s21L, s22L);
-                Complex detSa = ComplexNumbersUtils.calculateDeterminant(sa11, sa1221, sa1221, sa22);
-                Complex detSb = ComplexNumbersUtils.calculateDeterminant(sb11, sb1221, sb1221, sb22);
+                Complex detS = NumbersUtils.calculateDeterminant(s11L, s12L, s21L, s22L);
+                Complex detSa = NumbersUtils.calculateDeterminant(sa11, sa1221, sa1221, sa22);
+                Complex detSb = NumbersUtils.calculateDeterminant(sb11, sb1221, sb1221, sb22);
 
                 Complex s11x = detS
                         .subtract(sa11
@@ -170,7 +169,6 @@ public class CalculationService {
                         .build();
                 calculatedModels.add(calculatedModel);
             } catch (Exception ignored) {
-
             }
         }
 
