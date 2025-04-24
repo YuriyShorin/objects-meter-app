@@ -13,6 +13,7 @@ import ru.hse.objectsmeterapp.service.AlertService;
 import ru.hse.objectsmeterapp.service.CalculationService;
 import ru.hse.objectsmeterapp.service.ChartService;
 import ru.hse.objectsmeterapp.service.FileService;
+import ru.hse.objectsmeterapp.service.MicranConnectService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class LTMethodController {
     private final AlertService alertService;
 
     private final ChartService chartService;
+
+    private final MicranConnectService micranConnectService;
 
     private final Map<String, S2PFileModel> s2PFileModelsByFileNames;
 
@@ -140,6 +143,7 @@ public class LTMethodController {
         this.alertService = new AlertService();
         this.chartService = new ChartService();
         this.calculationService = new CalculationService();
+        this.micranConnectService = new MicranConnectService();
         this.s2PFileModelsByFileNames = new HashMap<>();
         this.charts = new ArrayList<>();
         this.calculatedModels = new ArrayList<>();
@@ -238,6 +242,10 @@ public class LTMethodController {
 
     public void calculateButtonPressed() {
         createCharts();
+    }
+
+    public void connectButtonPressed()  {
+        micranConnectService.connect();
     }
 
     public void frequencyChose() {

@@ -93,19 +93,7 @@ public class CalculationService {
                         .multiply(sb22)
                         .subtract(s11L
                                 .subtract(sa11)
-                                .subtract(detSb))
-                        .divide(sa22
-                                .multiply(sb22
-                                        .multiply(detS)
-                                        .subtract(s11L
-                                                .multiply(detSb)))
-                                .add(detSb
-                                        .subtract(s22L.
-                                                multiply(sb22))
-                                        .multiply(detSa)));
-                Complex s12x = s12L
-                        .multiply(sa1221)
-                        .multiply(sb1221)
+                                .multiply(detSb))
                         .divide(sa22
                                 .multiply(sb22
                                         .multiply(detS)
@@ -124,16 +112,30 @@ public class CalculationService {
                                         .subtract(s11L
                                                 .multiply(detSb)))
                                 .add(detSb
-                                        .subtract(s22L.
-                                                multiply(sb22))
+                                        .subtract(s22L
+                                                .multiply(sb22))
                                         .multiply(detSa)));
+
+                Complex s12x = s12L
+                        .multiply(sa1221)
+                        .multiply(sb1221)
+                        .divide(sa22
+                                .multiply(sb22
+                                        .multiply(detS)
+                                        .subtract(s11L
+                                                .multiply(detSb)))
+                                .add(detSb
+                                        .subtract(s22L
+                                                .multiply(sb22))
+                                        .multiply(detSa)));
+
                 Complex s22x = detS
                         .subtract(sb11
                                 .multiply(s11L))
                         .multiply(sa22)
                         .subtract(s22L
                                 .subtract(sb11)
-                                .subtract(detSa))
+                                .multiply(detSa))
                         .divide(sa22
                                 .multiply(sb22
                                         .multiply(detS)

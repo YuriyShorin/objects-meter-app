@@ -5,6 +5,7 @@ module ru.hse.objectsmeterapp {
     requires org.apache.commons.numbers.complex;
     requires java.desktop;
     requires commons.math3;
+    requires com.sun.jna;
 
     opens ru.hse.objectsmeterapp to javafx.fxml;
     exports ru.hse.objectsmeterapp;

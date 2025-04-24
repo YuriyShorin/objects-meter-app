@@ -53,6 +53,9 @@
     <Button layoutX="800.0" layoutY="104.0" mnemonicParsing="false" onAction="#calculateButtonPressed"
             text="Рассчитать"/>
 
+    <Button layoutX="920.0" layoutY="104.0" mnemonicParsing="false" onAction="#connectButtonPressed"
+            text="Подключиться"/>
+
     <TabPane layoutY="168.0" prefHeight="852.0" prefWidth="1920.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="60.0"
              tabMinWidth="40.0">
         <Tab text="S11">
