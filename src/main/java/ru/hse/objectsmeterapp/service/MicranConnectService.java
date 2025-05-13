@@ -49,7 +49,7 @@ public class MicranConnectService {
         String response = new String(readBuffer, 0, readCount.getValue(), StandardCharsets.UTF_8);
         System.out.println("Ответ от прибора: " + response);
 
-        //cleanup(defaultRM.getValue(), instrument.getValue());
+        cleanup(defaultRM.getValue(), instrument.getValue());
     }
 
     private void cleanup(int defaultRM, int instrument) {
