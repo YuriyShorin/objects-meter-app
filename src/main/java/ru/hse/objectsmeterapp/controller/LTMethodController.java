@@ -13,6 +13,7 @@ import ru.hse.objectsmeterapp.service.AlertService;
 import ru.hse.objectsmeterapp.service.CalculationService;
 import ru.hse.objectsmeterapp.service.ChartService;
 import ru.hse.objectsmeterapp.service.FileService;
+import ru.hse.objectsmeterapp.service.MicranConnectService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class LTMethodController {
     private final AlertService alertService;
 
     private final ChartService chartService;
+
+    private final MicranConnectService micranConnectService;
 
     private final Map<String, S2PFileModel> s2PFileModelsByFileNames;
 
@@ -111,11 +114,36 @@ public class LTMethodController {
     @FXML
     private LineChart<Number, Number> sb22ImaginaryChart;
 
+    @FXML
+    private LineChart<Number, Number> s11xRealChart;
+
+    @FXML
+    private LineChart<Number, Number> s11xImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> s21xRealChart;
+
+    @FXML
+    private LineChart<Number, Number> s21xImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> s12xRealChart;
+
+    @FXML
+    private LineChart<Number, Number> s12xImaginaryChart;
+
+    @FXML
+    private LineChart<Number, Number> s22xRealChart;
+
+    @FXML
+    private LineChart<Number, Number> s22xImaginaryChart;
+
     public LTMethodController() {
         this.fileService = new FileService();
         this.alertService = new AlertService();
         this.chartService = new ChartService();
         this.calculationService = new CalculationService();
+        this.micranConnectService = new MicranConnectService();
         this.s2PFileModelsByFileNames = new HashMap<>();
         this.charts = new ArrayList<>();
         this.calculatedModels = new ArrayList<>();
@@ -132,7 +160,12 @@ public class LTMethodController {
         charts.addAll(List.of(sa11RealChart, sa11ImaginaryChart, sb11RealChart, sb11ImaginaryChart,
                 sa12RealChart, sa12ImaginaryChart, sb12RealChart, sb12ImaginaryChart,
                 sa21RealChart, sa21ImaginaryChart, sb21RealChart, sb21ImaginaryChart,
-                sa22RealChart, sa22ImaginaryChart, sb22RealChart, sb22ImaginaryChart));
+                sa22RealChart, sa22ImaginaryChart, sb22RealChart, sb22ImaginaryChart,
+                s11xRealChart, s11xImaginaryChart,
+                s21xRealChart, s21xImaginaryChart,
+                s12xRealChart, s12xImaginaryChart,
+                s22xRealChart, s22xImaginaryChart));
+        chartService.addZoomForCharts(charts);
     }
 
     public void openFiles() {
@@ -209,6 +242,10 @@ public class LTMethodController {
 
     public void calculateButtonPressed() {
         createCharts();
+    }
+
+    public void connectButtonPressed()  {
+        micranConnectService.connect();
     }
 
     public void frequencyChose() {

@@ -5,12 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FrequencyAbbreviations {
+public enum Titles {
 
-    HZ("Hz"),
-    KHZ("kHz"),
-    MHZ("MHz"),
-    GHZ("GHz");
+    LT_METHOD("LT метод");
 
-    private final String abbreviation;
+    private final String title;
 }
