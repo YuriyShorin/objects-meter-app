@@ -5,7 +5,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.apache.commons.numbers.complex.Complex;
 import ru.hse.objectsmeterapp.model.AverageLineModel;
 import ru.hse.objectsmeterapp.model.CalculatedModel;
-import ru.hse.objectsmeterapp.model.S2PFileModel;
+import ru.hse.objectsmeterapp.model.MeasurementModel;
 import ru.hse.objectsmeterapp.utils.NumbersUtils;
 import ru.hse.objectsmeterapp.utils.ListUtils;
 
@@ -15,11 +15,11 @@ import java.util.List;
 public class CalculationService {
 
     private final static double PI = Math.PI;
-    private final static double EPSILON = 0.01;
+    private final static double EPSILON = 0.1;
 
-    public List<CalculatedModel> calculate(S2PFileModel lFileModel, S2PFileModel tFileModel, String frequencyAbbreviation) {
+    public List<CalculatedModel> calculate(List<MeasurementModel> lMeasurements, List<MeasurementModel> tMeasurements, String frequencyAbbreviation) {
         List<CalculatedModel> calculatedModels = new ArrayList<>();
-        List<AverageLineModel> frequencyPoints = findFrequencyPoints(lFileModel, tFileModel, frequencyAbbreviation);
+        List<AverageLineModel> frequencyPoints = findFrequencyPoints(lMeasurements, tMeasurements, frequencyAbbreviation);
 
         double[] frequencyArray = ListUtils
                 .listToArray(ListUtils
@@ -48,18 +48,18 @@ public class CalculationService {
         PolynomialSplineFunction Sb11Real = akimaSplineInterpolator.interpolate(frequencyArray, sb11RealArray);
         PolynomialSplineFunction Sb11Imaginary = akimaSplineInterpolator.interpolate(frequencyArray, sb11ImaginaryArray);
 
-        for (int i = 0; i < lFileModel.getMeasurements().size(); i++) {
-            Double frequency = countFrequency(lFileModel.getMeasurements().get(i).getFrequency(), frequencyAbbreviation);
+        for (int i = 0; i < lMeasurements.size(); i++) {
+            Double frequency = countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
 
-            Complex s11L = lFileModel.getMeasurements().get(i).getS11();
-            Complex s12L = lFileModel.getMeasurements().get(i).getS12();
-            Complex s21L = lFileModel.getMeasurements().get(i).getS21();
-            Complex s22L = lFileModel.getMeasurements().get(i).getS22();
+            Complex s11L = lMeasurements.get(i).getS11();
+            Complex s12L = lMeasurements.get(i).getS12();
+            Complex s21L = lMeasurements.get(i).getS21();
+            Complex s22L = lMeasurements.get(i).getS22();
 
-            Complex s11T = tFileModel.getMeasurements().get(i).getS11();
-            Complex s12T = tFileModel.getMeasurements().get(i).getS12();
-            Complex s21T = tFileModel.getMeasurements().get(i).getS21();
-            Complex s22T = tFileModel.getMeasurements().get(i).getS22();
+            Complex s11T = tMeasurements.get(i).getS11();
+            Complex s12T = tMeasurements.get(i).getS12();
+            Complex s21T = tMeasurements.get(i).getS21();
+            Complex s22T = tMeasurements.get(i).getS22();
 
             try {
                 Complex sa11 = Complex.ofCartesian(Sa11Real.value(frequency), Sa11Imaginary.value(frequency));
@@ -177,26 +177,26 @@ public class CalculationService {
         return calculatedModels;
     }
 
-    private List<AverageLineModel> findFrequencyPoints(S2PFileModel lFileModel, S2PFileModel tFileModel, String frequencyAbbreviation) {
+    private List<AverageLineModel> findFrequencyPoints(List<MeasurementModel> lMeasurements, List<MeasurementModel> tMeasurements, String frequencyAbbreviation) {
         List<AverageLineModel> frequencyPoints = new ArrayList<>();
 
-        for (int i = 0; i < lFileModel.getMeasurements().size(); ++i) {
-            Complex s11L = lFileModel.getMeasurements().get(i).getS11();
-            Complex s21L = lFileModel.getMeasurements().get(i).getS21();
-            Complex s12L = lFileModel.getMeasurements().get(i).getS12();
-            Complex s22L = lFileModel.getMeasurements().get(i).getS22();
+        for (int i = 0; i < lMeasurements.size(); ++i) {
+            Complex s11L = lMeasurements.get(i).getS11();
+            Complex s21L = lMeasurements.get(i).getS21();
+            Complex s12L = lMeasurements.get(i).getS12();
+            Complex s22L = lMeasurements.get(i).getS22();
 
-            Complex s11T = tFileModel.getMeasurements().get(i).getS11();
-            Complex s21T = tFileModel.getMeasurements().get(i).getS21();
-            Complex s12T = tFileModel.getMeasurements().get(i).getS12();
-            Complex s22T = tFileModel.getMeasurements().get(i).getS22();
+            Complex s11T = tMeasurements.get(i).getS11();
+            Complex s21T = tMeasurements.get(i).getS21();
+            Complex s12T = tMeasurements.get(i).getS12();
+            Complex s22T = tMeasurements.get(i).getS22();
 
             double arg = s21L
                     .divide(s21T)
                     .arg();
 
             if (Math.abs(arg - PI / 2) <= EPSILON || Math.abs(arg + PI / 2) <= EPSILON) {
-                double frequency = countFrequency(lFileModel.getMeasurements().get(i).getFrequency(), frequencyAbbreviation);
+                double frequency = countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
 
                 Complex t = s21L.divide(s21T);
                 Complex sA11 = s11L

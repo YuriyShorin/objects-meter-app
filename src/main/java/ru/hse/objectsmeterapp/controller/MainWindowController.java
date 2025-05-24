@@ -4,24 +4,31 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import ru.hse.objectsmeterapp.enums.FrequencyAbbreviations;
 import ru.hse.objectsmeterapp.exception.BusinessException;
 import ru.hse.objectsmeterapp.model.CalculatedModel;
-import ru.hse.objectsmeterapp.model.S2PFileModel;
+import ru.hse.objectsmeterapp.model.MeasurementModel;
 import ru.hse.objectsmeterapp.service.AlertService;
 import ru.hse.objectsmeterapp.service.CalculationService;
 import ru.hse.objectsmeterapp.service.ChartService;
 import ru.hse.objectsmeterapp.service.FileService;
 import ru.hse.objectsmeterapp.service.MicranConnectService;
+import ru.hse.objectsmeterapp.service.MicranMeasurementsService;
+import ru.hse.objectsmeterapp.utils.StringUtils;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class LTMethodController {
+public class MainWindowController {
+
+    private static final String DEFAULT_START_FREQUENCY = "10000000.0";
+    private static final String DEFAULT_STOP_FREQUENCY = "20000000000.0";
+    private static final String DEFAULT_POINTS = "500";
 
     private final FileService fileService;
 
@@ -33,9 +40,11 @@ public class LTMethodController {
 
     private final MicranConnectService micranConnectService;
 
-    private final Map<String, S2PFileModel> s2PFileModelsByFileNames;
+    private final MicranMeasurementsService micranMeasurementsService;
 
     private final List<LineChart<Number, Number>> charts;
+
+    private final List<List<MeasurementModel>> micranMeasurements;
 
     private List<CalculatedModel> calculatedModels;
 
@@ -61,10 +70,19 @@ public class LTMethodController {
     private ComboBox<String> frequencyComboBox;
 
     @FXML
-    private ComboBox<String> lFileComboBox;
+    private Circle connectionIndicator;
 
     @FXML
-    private ComboBox<String> tFileComboBox;
+    private Label deviceIdLabel;
+
+    @FXML
+    private TextField startFrequencyTextField;
+
+    @FXML
+    private TextField stopFrequencyTextField;
+
+    @FXML
+    private TextField pointsTextField;
 
     @FXML
     private LineChart<Number, Number> sa11RealChart;
@@ -138,18 +156,47 @@ public class LTMethodController {
     @FXML
     private LineChart<Number, Number> s22xImaginaryChart;
 
-    public LTMethodController() {
+    public MainWindowController() {
         this.fileService = new FileService();
         this.alertService = new AlertService();
         this.chartService = new ChartService();
         this.calculationService = new CalculationService();
         this.micranConnectService = new MicranConnectService();
-        this.s2PFileModelsByFileNames = new HashMap<>();
+        this.micranMeasurementsService = new MicranMeasurementsService();
+
         this.charts = new ArrayList<>();
         this.calculatedModels = new ArrayList<>();
+        this.micranMeasurements = new ArrayList<>();
     }
 
     public void initialize() {
+        TextFormatter<String> startFrequencyFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*\\.?\\d*")) {
+                return change;
+            }
+            return null;
+        });
+        TextFormatter<String> stopFrequencyFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*\\.?\\d*")) {
+                return change;
+            }
+            return null;
+        });
+        TextFormatter<String> pointsFormatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*")) {
+                return change;
+            }
+            return null;
+        });
+        startFrequencyTextField.setTextFormatter(pointsFormatter);
+
+        startFrequencyTextField.setTextFormatter(startFrequencyFormatter);
+        stopFrequencyTextField.setTextFormatter(stopFrequencyFormatter);
+        pointsTextField.setTextFormatter(pointsFormatter);
+
         if (frequencyComboBox != null && frequencyComboBox.getItems() != null) {
             frequencyComboBox.getItems().add(FrequencyAbbreviations.HZ.getAbbreviation());
             frequencyComboBox.getItems().add(FrequencyAbbreviations.KHZ.getAbbreviation());
@@ -157,6 +204,7 @@ public class LTMethodController {
             frequencyComboBox.getItems().add(FrequencyAbbreviations.GHZ.getAbbreviation());
             frequencyComboBox.setValue(FrequencyAbbreviations.GHZ.getAbbreviation());
         }
+
         charts.addAll(List.of(sa11RealChart, sa11ImaginaryChart, sb11RealChart, sb11ImaginaryChart,
                 sa12RealChart, sa12ImaginaryChart, sb12RealChart, sb12ImaginaryChart,
                 sa21RealChart, sa21ImaginaryChart, sb21RealChart, sb21ImaginaryChart,
@@ -165,45 +213,13 @@ public class LTMethodController {
                 s21xRealChart, s21xImaginaryChart,
                 s12xRealChart, s12xImaginaryChart,
                 s22xRealChart, s22xImaginaryChart));
+
         chartService.addZoomForCharts(charts);
-    }
-
-    public void openFiles() {
-        List<File> files = fileService.chooseFiles();
-        if (files.isEmpty()) {
-            return;
-        }
-
-        if (files.size() < 2) {
-            alertService.showErrorAlert("Выберете хотя бы 2 файла");
-        }
-
-        List<String> fileNames = new ArrayList<>();
-        s2PFileModelsByFileNames.clear();
-
-        files.forEach(file -> {
-            S2PFileModel s2PFileModel = fileService.readS2PFile(file);
-            s2PFileModelsByFileNames.put(file.getName(), s2PFileModel);
-            fileNames.add(file.getName());
-        });
-
-        lFileComboBox.getItems().addAll(fileNames);
-        lFileComboBox.setValue(files.getFirst().getName());
-
-        tFileComboBox.getItems().addAll(fileNames);
-        tFileComboBox.setValue(files.get(1).getName());
+        updateUI();
     }
 
     public void save() {
         fileService.save(calculatedModels);
-    }
-
-    public void closeFiles() {
-        s2PFileModelsByFileNames.clear();
-        calculatedModels.clear();
-        chartService.clearCharts(charts);
-        lFileComboBox.getItems().clear();
-        tFileComboBox.getItems().clear();
     }
 
     public void applyButtonPressed() {
@@ -244,10 +260,6 @@ public class LTMethodController {
         createCharts();
     }
 
-    public void connectButtonPressed()  {
-        micranConnectService.connect();
-    }
-
     public void frequencyChose() {
         createCharts();
     }
@@ -274,10 +286,57 @@ public class LTMethodController {
         yMaxTextField.setDisable(false);
     }
 
+    public void connectButtonPressed() {
+        micranConnectService.connect();
+        boolean connected = micranConnectService.isConnected();
+
+        updateUI();
+
+        if (connected) {
+            micranConnectService.createTraces();
+
+            String startFrequency = StringUtils.stringOrDefault(startFrequencyTextField.getText(), DEFAULT_START_FREQUENCY);
+            String stopFrequency = StringUtils.stringOrDefault(stopFrequencyTextField.getText(), DEFAULT_STOP_FREQUENCY);
+            String points = StringUtils.stringOrDefault(pointsTextField.getText(), DEFAULT_POINTS);
+
+            micranConnectService.makeInitialSettings(startFrequency, stopFrequency, points);
+
+            updateUI();
+        }
+    }
+
+    public void measureButtonPressed() {
+        if (micranConnectService.isConnected()) {
+            String startFrequency = StringUtils.stringOrDefault(startFrequencyTextField.getText(), DEFAULT_START_FREQUENCY);
+            String stopFrequency = StringUtils.stringOrDefault(stopFrequencyTextField.getText(), DEFAULT_STOP_FREQUENCY);
+            String points = StringUtils.stringOrDefault(pointsTextField.getText(), DEFAULT_POINTS);
+
+            String trc1Measurements = micranConnectService.fetchMeasurementData("Trc1");
+            String trc2Measurements = micranConnectService.fetchMeasurementData("Trc2");
+            String trc3Measurements = micranConnectService.fetchMeasurementData("Trc3");
+            String trc4Measurements = micranConnectService.fetchMeasurementData("Trc4");
+
+            List<MeasurementModel> measurements = micranMeasurementsService.parseMeasurementsFromMicran(trc1Measurements, trc2Measurements, trc3Measurements, trc4Measurements,
+                    startFrequency, stopFrequency, points);
+
+            micranMeasurements.add(measurements);
+        }
+
+        updateUI();
+    }
+
+    public void disconnectButtonPressed() {
+        micranConnectService.disconnect();
+        updateUI();
+    }
+
+    private void updateUI() {
+        connectionIndicator.setFill(micranConnectService.isConnected() ? Color.LIMEGREEN : Color.RED);
+        deviceIdLabel.setText(micranConnectService.getLastId());
+    }
+
     private void createCharts() {
-        calculatedModels = calculationService.calculate(s2PFileModelsByFileNames.get(lFileComboBox.getValue()),
-                s2PFileModelsByFileNames.get(tFileComboBox.getValue()),
-                frequencyComboBox.getValue());
+        calculatedModels = calculationService.calculate(micranMeasurements.getFirst(), micranMeasurements.getLast(), frequencyComboBox.getValue());
         chartService.clearCharts(charts);
         chartService.createCharts(charts, calculatedModels);
     }
