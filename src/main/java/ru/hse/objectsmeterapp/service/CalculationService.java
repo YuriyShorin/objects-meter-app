@@ -49,7 +49,7 @@ public class CalculationService {
         PolynomialSplineFunction Sb11Imaginary = akimaSplineInterpolator.interpolate(frequencyArray, sb11ImaginaryArray);
 
         for (int i = 0; i < lMeasurements.size(); i++) {
-            Double frequency = countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
+            Double frequency = NumbersUtils.countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
 
             Complex s11L = lMeasurements.get(i).getS11();
             Complex s12L = lMeasurements.get(i).getS12();
@@ -196,7 +196,7 @@ public class CalculationService {
                     .arg();
 
             if (Math.abs(arg - PI / 2) <= EPSILON || Math.abs(arg + PI / 2) <= EPSILON) {
-                double frequency = countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
+                double frequency = NumbersUtils.countFrequency(lMeasurements.get(i).getFrequency(), frequencyAbbreviation);
 
                 Complex t = s21L.divide(s21T);
                 Complex sA11 = s11L
@@ -226,14 +226,5 @@ public class CalculationService {
         }
 
         return frequencyPoints;
-    }
-
-    private Double countFrequency(Double frequency, String frequencyAbbreviation) {
-        return switch (frequencyAbbreviation) {
-            case "Hz" -> frequency;
-            case "kHz" -> frequency / 1000;
-            case "MHz" -> frequency / 1000000;
-            default -> frequency / 1000000000;
-        };
     }
 }

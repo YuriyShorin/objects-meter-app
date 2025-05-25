@@ -26,4 +26,13 @@ public class NumbersUtils {
                 Double.parseDouble(imaginary)
         );
     }
+
+    public static Double countFrequency(Double frequency, String frequencyAbbreviation) {
+        return switch (frequencyAbbreviation) {
+            case "Hz" -> frequency;
+            case "kHz" -> frequency / 1000;
+            case "MHz" -> frequency / 1000000;
+            default -> frequency / 1000000000;
+        };
+    }
 }
