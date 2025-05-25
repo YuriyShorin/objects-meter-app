@@ -14,12 +14,12 @@ public class ObjectsMeterFxApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ObjectsMeterFxApplication.class.getResource(FileNames.LT_METHOD.getName()));
+        FXMLLoader fxmlLoader = new FXMLLoader(ObjectsMeterFxApplication.class.getResource(FileNames.MAIN_WINDOW.getName()));
 
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(FileNames.STYLES.getName())).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(FileNames.MAIN_WINDOW_STYLE.getName())).toExternalForm());
 
-        stage.setTitle(Titles.LT_METHOD.getTitle());
+        stage.setTitle(Titles.MAIN_WINDOW.getTitle());
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();

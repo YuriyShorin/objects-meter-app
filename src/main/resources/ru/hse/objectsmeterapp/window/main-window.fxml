@@ -12,20 +12,19 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 
 <?import javafx.scene.layout.GridPane?>
 
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.control.Label?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1020.0"
             prefWidth="1920.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ru.hse.objectsmeterapp.controller.LTMethodController">
+            fx:controller="ru.hse.objectsmeterapp.controller.MainWindowController">
     <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="1920.0">
         <Menu mnemonicParsing="false" text="Файл">
-            <MenuItem mnemonicParsing="false" onAction="#openFiles" text="Открыть"/>
             <MenuItem mnemonicParsing="false" onAction="#save" text="Сохранить"/>
-            <MenuItem mnemonicParsing="false" onAction="#closeFiles" text="Закрыть"/>
         </Menu>
     </MenuBar>
 
@@ -44,17 +43,32 @@
 
     <ComboBox fx:id="frequencyComboBox" layoutX="396.0" layoutY="64.0" onAction="#frequencyChose" prefWidth="150.0"/>
 
-    <Text layoutX="581.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="L file:"/>
-    <Text layoutX="581.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T file:"/>
-
-    <ComboBox fx:id="lFileComboBox" layoutX="621.0" layoutY="64.0" prefWidth="150.0"/>
-    <ComboBox fx:id="tFileComboBox" layoutX="621.0" layoutY="104.0" prefWidth="150.0"/>
-
+    <Button layoutX="800.0" layoutY="64.0" mnemonicParsing="false" onAction="#measureButtonPressed"
+            text="Измерить"/>
     <Button layoutX="800.0" layoutY="104.0" mnemonicParsing="false" onAction="#calculateButtonPressed"
             text="Рассчитать"/>
 
-    <Button layoutX="920.0" layoutY="104.0" mnemonicParsing="false" onAction="#connectButtonPressed"
+    <Button fx:id="connectButton" layoutX="920.0" layoutY="64.0" mnemonicParsing="false"
+            onAction="#connectButtonPressed"
             text="Подключиться"/>
+    <Button fx:id="disconnectButton" layoutX="920.0" layoutY="104.0" mnemonicParsing="false"
+            onAction="#disconnectButtonPressed"
+            text="Отключиться"/>
+
+    <Label layoutX="1100.0" layoutY="64.0" text="Статус подключения:"/>
+    <Circle layoutX="1240.0" layoutY="72.0" fx:id="connectionIndicator" radius="8" fill="GRAY" stroke="BLACK"/>
+
+    <Label layoutX="1100.0" layoutY="96.0" text="ID прибора:"/>
+    <Label layoutX="1180.0" layoutY="96.0" fx:id="deviceIdLabel" text="---"/>
+
+    <Label layoutX="1420.0" layoutY="64.0" text="Начальная частота:"/>
+    <TextField layoutX="1580.0" layoutY="64.0" fx:id="startFrequencyTextField" promptText="Напр. 1000000000"/>
+
+    <Label layoutX="1420.0" layoutY="96.0" text="Конечная частота:"/>
+    <TextField layoutX="1580.0" layoutY="96.0" fx:id="stopFrequencyTextField" promptText="Напр. 3000000000"/>
+
+    <Label layoutX="1420.0" layoutY="128.0" text="Количество точек:"/>
+    <TextField layoutX="1580.0" layoutY="128.0" fx:id="pointsTextField" promptText="Напр. 201"/>
 
     <TabPane layoutY="168.0" prefHeight="852.0" prefWidth="1920.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="60.0"
              tabMinWidth="40.0">

@@ -7,14 +7,6 @@ import java.math.RoundingMode;
 
 public class NumbersUtils {
 
-    public static Complex fromPolarCoordinates(Double magnitudeInDb, Double phaseInDegrees) {
-        double magnitude = Math.pow(10, magnitudeInDb / 20);
-        double phaseInRadians = Math.toRadians(phaseInDegrees);
-        double real = magnitude * Math.cos(phaseInRadians);
-        double imaginary = magnitude * Math.sin(phaseInRadians);
-        return Complex.ofCartesian(real, imaginary);
-    }
-
     public static Complex calculateDeterminant(Complex a, Complex b, Complex c, Complex d) {
         return a
                 .multiply(d)
@@ -26,5 +18,21 @@ public class NumbersUtils {
         return BigDecimal.valueOf(value)
                 .setScale(scale, roundingMode)
                 .doubleValue();
+    }
+
+    public static Complex parseComplex(String real, String imaginary) {
+        return Complex.ofCartesian(
+                Double.parseDouble(real),
+                Double.parseDouble(imaginary)
+        );
+    }
+
+    public static Double countFrequency(Double frequency, String frequencyAbbreviation) {
+        return switch (frequencyAbbreviation) {
+            case "Hz" -> frequency;
+            case "kHz" -> frequency / 1000;
+            case "MHz" -> frequency / 1000000;
+            default -> frequency / 1000000000;
+        };
     }
 }

@@ -8,6 +8,10 @@ public interface VisaLibrary extends Library {
 
     VisaLibrary INSTANCE = Native.load("MiVISA64", VisaLibrary.class);
 
+    String ADDRESS = "TCPIP::localhost::8888::SOCKET::VNA";
+
+    long VI_ATTR_TMO_VALUE = 0x3FFF001A;
+
     int viOpenDefaultRM(IntByReference vi);
 
     int viOpen(int sesn, String address, int mode, int timeout, IntByReference vi);
@@ -16,5 +20,7 @@ public interface VisaLibrary extends Library {
 
     int viRead(int vi, byte[] buf, int count, IntByReference retCount);
 
-    int viClose(int vi);
+    void viClose(int vi);
+
+    int viSetAttribute(int vi, long attrName, int attrValue);
 }

@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum FileNames {
 
-    LT_METHOD("lt-method-window.fxml"),
-    STYLES("style/style.css");
+    // FXML
+    MAIN_WINDOW("window/main-window.fxml"),
+
+    // STYLES
+    MAIN_WINDOW_STYLE("style/main-window.css");
 
     private final String name;
 }

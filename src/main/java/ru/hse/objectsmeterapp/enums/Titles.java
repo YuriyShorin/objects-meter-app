@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Titles {
 
-    LT_METHOD("LT метод");
+    MAIN_WINDOW("Измерение объектов");
 
     private final String title;
 }
