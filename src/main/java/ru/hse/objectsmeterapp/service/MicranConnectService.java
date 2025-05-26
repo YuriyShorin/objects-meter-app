@@ -4,6 +4,7 @@ import com.sun.jna.ptr.IntByReference;
 import lombok.Getter;
 import ru.hse.objectsmeterapp.exception.BusinessException;
 import ru.hse.objectsmeterapp.library.VisaLibrary;
+import ru.hse.objectsmeterapp.utils.NumbersUtils;
 
 import java.nio.charset.StandardCharsets;
 
@@ -70,10 +71,12 @@ public class MicranConnectService {
         }
     }
 
-    public void makeInitialSettings(String startFrequency, String stopFrequency, String points) {
+    public void makeInitialSettings(String startFrequency, String stopFrequency, String points, String frequencyAbbreviation) {
+        Double startFrequencyHz = NumbersUtils.frequencyToHz(Double.parseDouble(startFrequency), frequencyAbbreviation);
+        Double stopFrequencyHz = NumbersUtils.frequencyToHz(Double.parseDouble(stopFrequency), frequencyAbbreviation);
         try {
-            visaWrite("SENSe:FREQuency:STARt " + startFrequency + "\n");
-            visaWrite("SENSe:FREQuency:STOP " + stopFrequency + "\n");
+            visaWrite("SENSe:FREQuency:STARt " + startFrequencyHz + "\n");
+            visaWrite("SENSe:FREQuency:STOP " + stopFrequencyHz + "\n");
             visaWrite("SENSe:SWEep:POINts " + points + "\n");
         } catch (Exception e) {
             connected = false;

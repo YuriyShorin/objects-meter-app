@@ -1,4 +1,4 @@
-package ru.hse.objectsmeterapp.enums;
+package ru.hse.objectsmeterapp.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

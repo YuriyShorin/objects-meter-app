@@ -10,23 +10,13 @@ import java.util.stream.DoubleStream;
 
 public class MicranMeasurementsService {
 
-    private static final double DEFAULT_START_FREQUENCY = 10000000.0;
-    private static final double DEFAULT_STOP_FREQUENCY = 20000000000.0;
-    private static final int DEFAULT_POINTS = 500;
-
     public List<MeasurementModel> parseMeasurementsFromMicran(String trc1Measurements, String trc2Measurements, String trc3Measurements, String trc4Measurements,
-                                                              String startFrequency, String stopFrequency, String points) {
+                                                              String startFrequency, String stopFrequency, String points, String frequencyAbbreviation) {
         List<MeasurementModel> measurements = new ArrayList<>();
 
-        double startFrequencyParsed = startFrequency.isEmpty()
-                ? DEFAULT_START_FREQUENCY
-                : Double.parseDouble(startFrequency);
-        double stopFrequencyParsed = startFrequency.isEmpty()
-                ? DEFAULT_STOP_FREQUENCY
-                : Double.parseDouble(stopFrequency);
-        int pointsParsed = points.isEmpty()
-                ? DEFAULT_POINTS
-                : Integer.parseInt(points);
+        double startFrequencyParsed = NumbersUtils.frequencyToHz(Double.parseDouble(startFrequency), frequencyAbbreviation);
+        double stopFrequencyParsed = NumbersUtils.frequencyToHz(Double.parseDouble(stopFrequency), frequencyAbbreviation);
+        int pointsParsed = Integer.parseInt(points);
         double step = (stopFrequencyParsed - startFrequencyParsed) / pointsParsed;
 
         List<Double> frequencyList = DoubleStream.iterate(startFrequencyParsed, hasNext -> hasNext <= stopFrequencyParsed, next -> next + step)

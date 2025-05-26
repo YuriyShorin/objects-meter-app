@@ -43,32 +43,36 @@
 
     <ComboBox fx:id="frequencyComboBox" layoutX="396.0" layoutY="64.0" onAction="#frequencyChose" prefWidth="150.0"/>
 
-    <Button layoutX="800.0" layoutY="64.0" mnemonicParsing="false" onAction="#measureButtonPressed"
+    <Button layoutX="568.0" layoutY="64.0" mnemonicParsing="false" onAction="#measureButtonPressed"
             text="Измерить"/>
-    <Button layoutX="800.0" layoutY="104.0" mnemonicParsing="false" onAction="#calculateButtonPressed"
+    <Button layoutX="568.0" layoutY="104.0" mnemonicParsing="false" onAction="#calculateButtonPressed"
             text="Рассчитать"/>
 
-    <Button fx:id="connectButton" layoutX="920.0" layoutY="64.0" mnemonicParsing="false"
+    <Label fx:id="measurementsCounterLabel" layoutX="720.0" layoutY="64.0" text="Измерений выполнено: 0"/>
+    <Button layoutX="720.0" layoutY="104.0" mnemonicParsing="false" onAction="#resetMeasurementsButtonPressed"
+            text="Сбросить измерения"/>
+
+    <Button fx:id="connectButton" layoutX="1060.0" layoutY="64.0" mnemonicParsing="false"
             onAction="#connectButtonPressed"
             text="Подключиться"/>
-    <Button fx:id="disconnectButton" layoutX="920.0" layoutY="104.0" mnemonicParsing="false"
+    <Button fx:id="disconnectButton" layoutX="1060.0" layoutY="104.0" mnemonicParsing="false"
             onAction="#disconnectButtonPressed"
             text="Отключиться"/>
 
-    <Label layoutX="1100.0" layoutY="64.0" text="Статус подключения:"/>
-    <Circle layoutX="1240.0" layoutY="72.0" fx:id="connectionIndicator" radius="8" fill="GRAY" stroke="BLACK"/>
+    <Label fx:id="startFrequencyLabel" layoutX="1220.0" layoutY="64.0" text="Начальная частота (GHz):"/>
+    <TextField layoutX="1388.0" layoutY="64.0" fx:id="startFrequencyTextField" promptText="Напр. 0.01"/>
 
-    <Label layoutX="1100.0" layoutY="96.0" text="ID прибора:"/>
-    <Label layoutX="1180.0" layoutY="96.0" fx:id="deviceIdLabel" text="---"/>
+    <Label fx:id="stopFrequencyLabel" layoutX="1220.0" layoutY="96.0" text="Конечная частота (GHz):"/>
+    <TextField layoutX="1388.0" layoutY="96.0" fx:id="stopFrequencyTextField" promptText="Напр. 20"/>
 
-    <Label layoutX="1420.0" layoutY="64.0" text="Начальная частота:"/>
-    <TextField layoutX="1580.0" layoutY="64.0" fx:id="startFrequencyTextField" promptText="Напр. 1000000000"/>
+    <Label layoutX="1220.0" layoutY="128.0" text="Количество точек:"/>
+    <TextField layoutX="1388.0" layoutY="128.0" fx:id="pointsTextField" promptText="Напр. 801"/>
 
-    <Label layoutX="1420.0" layoutY="96.0" text="Конечная частота:"/>
-    <TextField layoutX="1580.0" layoutY="96.0" fx:id="stopFrequencyTextField" promptText="Напр. 3000000000"/>
+    <Label layoutX="1580.0" layoutY="64.0" text="Статус подключения:"/>
+    <Circle layoutX="1720.0" layoutY="72.0" fx:id="connectionIndicator" radius="8" fill="GRAY" stroke="BLACK"/>
 
-    <Label layoutX="1420.0" layoutY="128.0" text="Количество точек:"/>
-    <TextField layoutX="1580.0" layoutY="128.0" fx:id="pointsTextField" promptText="Напр. 201"/>
+    <Label layoutX="1580.0" layoutY="96.0" text="ID прибора:"/>
+    <Label layoutX="1660.0" layoutY="96.0" fx:id="deviceIdLabel" text="---"/>
 
     <TabPane layoutY="168.0" prefHeight="852.0" prefWidth="1920.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="60.0"
              tabMinWidth="40.0">

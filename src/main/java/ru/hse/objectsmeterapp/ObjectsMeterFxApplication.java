@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.hse.objectsmeterapp.enums.FileNames;
-import ru.hse.objectsmeterapp.enums.Titles;
+import ru.hse.objectsmeterapp.model.enums.FileNames;
+import ru.hse.objectsmeterapp.model.enums.Titles;
 
 import java.io.IOException;
 import java.util.Objects;
