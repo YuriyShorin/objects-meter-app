@@ -35,4 +35,13 @@ public class NumbersUtils {
             default -> frequency / 1000000000;
         };
     }
+
+    public static Double frequencyToHz(Double frequency, String frequencyAbbreviation) {
+        return switch (frequencyAbbreviation) {
+            case "Hz" -> frequency;
+            case "kHz" -> frequency * 1000;
+            case "MHz" -> frequency * 1000000;
+            default -> frequency * 1000000000;
+        };
+    }
 }
