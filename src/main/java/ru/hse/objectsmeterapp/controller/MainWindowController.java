@@ -349,7 +349,7 @@ public class MainWindowController {
 
         measurementsCounterLabel.setText("Измерений выполнено: " + micranMeasurements.size());
         startFrequencyLabel.setText("Начальная частота (" + frequencyComboBox.getValue() + "):");
-        stopFrequencyLabel.setText("Начальная частота (" + frequencyComboBox.getValue() + "):");
+        stopFrequencyLabel.setText("Конечная частота (" + frequencyComboBox.getValue() + "):");
     }
 
     private void createCharts() {
