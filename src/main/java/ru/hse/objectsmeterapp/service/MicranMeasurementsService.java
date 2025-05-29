@@ -30,6 +30,10 @@ public class MicranMeasurementsService {
 
         int measurementIndex = 0;
         for (Double frequency : frequencyList) {
+            if (measurementIndex >= trc1MeasurementsSplit.length - 1) {
+                break;
+            }
+
             Complex s11 = NumbersUtils.parseComplex(trc1MeasurementsSplit[measurementIndex], trc1MeasurementsSplit[measurementIndex + 1]);
             Complex s21 = NumbersUtils.parseComplex(trc2MeasurementsSplit[measurementIndex], trc2MeasurementsSplit[measurementIndex + 1]);
             Complex s12 = NumbersUtils.parseComplex(trc3MeasurementsSplit[measurementIndex], trc3MeasurementsSplit[measurementIndex + 1]);
